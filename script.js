@@ -5,7 +5,7 @@ const resultEl = document.getElementById('result');
 const restartBtn = document.getElementById('restart-btn');
 
 let count = 0;
-let timeLeft = 1.0; // 秒
+let timeLeft = 1.0;
 let intervalId = null;
 let gameActive = false;
 
@@ -24,7 +24,6 @@ function startGame() {
   resultEl.classList.add('hidden');
   restartBtn.classList.add('hidden');
   clickBtn.disabled = false;
-
   updateCountDisplay();
   updateTimerDisplay();
 
@@ -45,19 +44,33 @@ function endGame() {
   resultEl.textContent = `終了！あなたのスコア: ${count}回`;
   resultEl.classList.remove('hidden');
   restartBtn.classList.remove('hidden');
+  timerEl.textContent = `残り時間: 0.00秒`;
 }
 
+// 最初はゲーム開始していない状態にする
+gameActive = false;
+updateTimerDisplay();
+updateCountDisplay();
+
 clickBtn.addEventListener('click', () => {
-  if (!gameActive) return;
-  count++;
-  updateCountDisplay();
+  if (!gameActive) {
+    // 最初のクリックでゲームスタート
+    startGame();
+  }
+  if (gameActive) {
+    count++;
+    updateCountDisplay();
+  }
 });
 
 restartBtn.addEventListener('click', () => {
-  startGame();
+  // リセット表示状態に戻す
+  count = 0;
+  timeLeft = 1.0;
+  updateCountDisplay();
+  updateTimerDisplay();
+  resultEl.classList.add('hidden');
+  restartBtn.classList.add('hidden');
+  clickBtn.disabled = false;
+  gameActive = false;
 });
-
-// ページ読み込み時にゲーム開始
-window.onload = () => {
-  startGame();
-};
